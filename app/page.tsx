@@ -1,6 +1,9 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import CountUp from "react-countup";
+import { useInView } from "react-intersection-observer";
+
 // import ServiceCard from "@/components/ui/ServiceCard";
 import {
   Phone,
@@ -33,10 +36,23 @@ import {
 
 function TekupHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [openMobileDropdown, setOpenMobileDropdown] = useState<string | null>(
+    null
+  );
+
+  const toggleDropdown = (menu: string) => {
+    setOpenDropdown((prev) => (prev === menu ? null : menu));
+  };
+
+  const toggleMobileDropdown = (menu: string): void => {
+    setOpenMobileDropdown((prev: string | null) =>
+      prev === menu ? null : menu
+    );
+  };
 
   return (
     <div className="bg-white w-full">
-      {/* Top Contact Bar - Hidden on mobile */}
       <div className="border-b border-gray-200 hidden sm:block">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row justify-between items-center py-2 text-sm text-gray-600">
@@ -62,10 +78,8 @@ function TekupHeader() {
         </div>
       </div>
 
-      {/* Main Header */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
-          {/* Logo */}
           <div className="flex items-center">
             <div className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-black rounded flex items-center justify-center">
@@ -77,29 +91,94 @@ function TekupHeader() {
             </div>
           </div>
 
-          {/* Desktop Navigation Menu */}
-          <nav className="hidden md:flex items-center space-x-4 lg:space-x-8">
-            <div className="flex items-center space-x-1 text-gray-700 hover:text-blue-600 cursor-pointer">
-              <span>Demo</span>
-              <ChevronDown size={16} />
+          <nav className="hidden md:flex items-center space-x-4 lg:space-x-8 relative">
+            <div className="relative">
+              <div
+                className="flex items-center space-x-1 text-gray-700 hover:text-blue-600 cursor-pointer"
+                onClick={() => toggleDropdown("demo")}
+              >
+                <span>Demo</span>
+                <ChevronDown size={16} />
+              </div>
+              {openDropdown === "demo" && (
+                <div className="absolute top-full mt-2 bg-white border rounded shadow z-20 w-40 p-2 space-y-1 text-sm text-left">
+                  <a
+                    href="#"
+                    className="block px-3 py-1 hover:bg-gray-100 rounded"
+                  >
+                    Demo 1
+                  </a>
+                  <a
+                    href="#"
+                    className="block px-3 py-1 hover:bg-gray-100 rounded"
+                  >
+                    Demo 2
+                  </a>
+                </div>
+              )}
             </div>
+
             <a href="#" className="text-gray-700 hover:text-blue-600">
               About Us
             </a>
-            <div className="flex items-center space-x-1 text-gray-700 hover:text-blue-600 cursor-pointer">
-              <span>Pages</span>
-              <ChevronDown size={16} />
+
+            <div className="relative">
+              <div
+                className="flex items-center space-x-1 text-gray-700 hover:text-blue-600 cursor-pointer"
+                onClick={() => toggleDropdown("pages")}
+              >
+                <span>Pages</span>
+                <ChevronDown size={16} />
+              </div>
+              {openDropdown === "pages" && (
+                <div className="absolute top-full mt-2 bg-white border rounded shadow z-20 w-40 p-2 space-y-1 text-sm text-left">
+                  <a
+                    href="#"
+                    className="block px-3 py-1 hover:bg-gray-100 rounded"
+                  >
+                    Page 1
+                  </a>
+                  <a
+                    href="#"
+                    className="block px-3 py-1 hover:bg-gray-100 rounded"
+                  >
+                    Page 2
+                  </a>
+                </div>
+              )}
             </div>
-            <div className="flex items-center space-x-1 text-gray-700 hover:text-blue-600 cursor-pointer">
-              <span>Blog</span>
-              <ChevronDown size={16} />
+
+            <div className="relative">
+              <div
+                className="flex items-center space-x-1 text-gray-700 hover:text-blue-600 cursor-pointer"
+                onClick={() => toggleDropdown("blog")}
+              >
+                <span>Blog</span>
+                <ChevronDown size={16} />
+              </div>
+              {openDropdown === "blog" && (
+                <div className="absolute top-full mt-2 bg-white border rounded shadow z-20 w-40 p-2 space-y-1 text-sm text-left">
+                  <a
+                    href="#"
+                    className="block px-3 py-1 hover:bg-gray-100 rounded"
+                  >
+                    Blog 1
+                  </a>
+                  <a
+                    href="#"
+                    className="block px-3 py-1 hover:bg-gray-100 rounded"
+                  >
+                    Blog 2
+                  </a>
+                </div>
+              )}
             </div>
+
             <a href="#" className="text-gray-700 hover:text-blue-600">
               Contact Us
             </a>
           </nav>
 
-          {/* Get In Touch Button - Smaller on mobile */}
           <button className="hidden sm:flex bg-blue-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 items-center space-x-2">
             <span className="text-sm sm:text-base">Get in Touch</span>
             <svg
@@ -120,7 +199,6 @@ function TekupHeader() {
             </svg>
           </button>
 
-          {/* Mobile Menu Button */}
           <button
             className="md:hidden p-2 focus:outline-none"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -134,11 +212,9 @@ function TekupHeader() {
         </div>
       </div>
 
-      {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
         <div className="md:hidden bg-white border-t border-gray-200">
           <div className="px-4 py-2 space-y-1">
-            {/* Mobile Contact Information */}
             <div className="py-2 border-b border-gray-100">
               <div className="flex items-center space-x-2 py-1">
                 <MapPin size={16} className="text-blue-600" />
@@ -156,26 +232,68 @@ function TekupHeader() {
               </div>
             </div>
 
-            {/* Mobile Navigation Links */}
             <div className="py-2 flex flex-col">
-              <div className="flex justify-between items-center py-2 border-b border-gray-100">
+              <div
+                className="flex justify-between items-center py-2 border-b border-gray-100"
+                onClick={() => toggleMobileDropdown("demo")}
+              >
                 <span className="text-gray-700">Demo</span>
                 <ChevronDown size={16} />
               </div>
+              {openMobileDropdown === "demo" && (
+                <div className="pl-4 space-y-1 text-sm">
+                  <a href="#" className="block py-1 text-gray-600">
+                    Demo 1
+                  </a>
+                  <a href="#" className="block py-1 text-gray-600">
+                    Demo 2
+                  </a>
+                </div>
+              )}
+
               <a
                 href="#"
                 className="py-2 text-gray-700 border-b border-gray-100"
               >
                 About Us
               </a>
-              <div className="flex justify-between items-center py-2 border-b border-gray-100">
+
+              <div
+                className="flex justify-between items-center py-2 border-b border-gray-100"
+                onClick={() => toggleMobileDropdown("pages")}
+              >
                 <span className="text-gray-700">Pages</span>
                 <ChevronDown size={16} />
               </div>
-              <div className="flex justify-between items-center py-2 border-b border-gray-100">
+              {openMobileDropdown === "pages" && (
+                <div className="pl-4 space-y-1 text-sm">
+                  <a href="#" className="block py-1 text-gray-600">
+                    Page 1
+                  </a>
+                  <a href="#" className="block py-1 text-gray-600">
+                    Page 2
+                  </a>
+                </div>
+              )}
+
+              <div
+                className="flex justify-between items-center py-2 border-b border-gray-100"
+                onClick={() => toggleMobileDropdown("blog")}
+              >
                 <span className="text-gray-700">Blog</span>
                 <ChevronDown size={16} />
               </div>
+              {openMobileDropdown === "blog" && (
+                <div className="pl-4 space-y-1 text-sm">
+                  <a href="#" className="block py-1 text-gray-600">
+                    Blog 1
+                  </a>
+                  <a href="#" className="block py-1 text-gray-600">
+                    Blog 2
+                  </a>
+                </div>
+              )}
+
               <a
                 href="#"
                 className="py-2 text-gray-700 border-b border-gray-100"
@@ -184,7 +302,6 @@ function TekupHeader() {
               </a>
             </div>
 
-            {/* Mobile Get In Touch Button */}
             <div className="py-2">
               <button className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center space-x-2">
                 <span>Get in Touch</span>
@@ -397,7 +514,9 @@ function ServicesCarousel() {
           {/* Service Card */}
           <div className="bg-white p-6 rounded-xl shadow-md flex flex-col items-center text-center">
             <currentService.icon className="w-10 h-10 mb-4 text-blue-600" />
-            <h3 className="text-lg font-semibold mb-2">{currentService.title}</h3>
+            <h3 className="text-lg font-semibold mb-2">
+              {currentService.title}
+            </h3>
             <p className="text-gray-600">{currentService.text}</p>
           </div>
 
@@ -419,7 +538,6 @@ function ServicesCarousel() {
     </section>
   );
 }
-
 
 function LogoMarquee() {
   return (
@@ -505,20 +623,34 @@ function TestimonialSlider() {
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [userInteracted, setUserInteracted] = useState(false);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!userInteracted) {
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % testimonials.length);
+      }
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [userInteracted, testimonials.length]);
+
+  const handleUserInteraction = (index: number) => {
+    setCurrentIndex(index);
+    setUserInteracted(true);
+    setTimeout(() => setUserInteracted(false), 10000);
+  };
 
   const goToPrevious = () => {
-    const isFirstSlide = currentIndex === 0;
-    const newIndex = isFirstSlide ? testimonials.length - 1 : currentIndex - 1;
-    setCurrentIndex(newIndex);
+    const newIndex =
+      currentIndex === 0 ? testimonials.length - 1 : currentIndex - 1;
+    handleUserInteraction(newIndex);
   };
 
   const goToNext = () => {
-    const isLastSlide = currentIndex === testimonials.length - 1;
-    const newIndex = isLastSlide ? 0 : currentIndex + 1;
-    setCurrentIndex(newIndex);
+    const newIndex = (currentIndex + 1) % testimonials.length;
+    handleUserInteraction(newIndex);
   };
-
-  const currentTestimonial = testimonials[currentIndex];
 
   return (
     <section className="py-16 bg-gray-900 text-white px-4">
@@ -531,8 +663,7 @@ function TestimonialSlider() {
           </h2>
         </div>
 
-        <div className="relative max-w-4xl mx-auto">
-          {/* Navigation buttons */}
+        <div className="relative max-w-4xl mx-auto overflow-hidden">
           <button
             onClick={goToPrevious}
             className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 w-8 h-8 bg-white rounded-full flex items-center justify-center text-gray-900 shadow-md z-10 hover:bg-gray-100 transition-colors"
@@ -549,47 +680,48 @@ function TestimonialSlider() {
             <ChevronRight size={20} />
           </button>
 
-          {/* Testimonial card */}
-          <div className="flex flex-col md:flex-row bg-white overflow-hidden rounded-lg">
-            {/* Left side - Image */}
-            <div className="w-full md:w-1/2 h-64 md:h-auto relative">
-              <Image
-                src={currentTestimonial.image}
-                alt={`${currentTestimonial.author} testimonial`}
-                fill
-                className="object-cover"
-              />
-            </div>
+          <div
+            className="flex transition-transform duration-500 ease-in-out"
+            style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+          >
+            {testimonials.map((t) => (
+              <div key={t.id} className="w-full flex-shrink-0 px-2">
+                <div className="flex flex-col md:flex-row bg-white rounded-lg overflow-hidden text-gray-800">
+                  <div className="w-full md:w-1/2 h-64 md:h-auto relative">
+                    <Image
+                      src={t.image}
+                      alt={`${t.author} testimonial`}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
 
-            {/* Right side - Content */}
-            <div className="w-full md:w-1/2 p-6 md:p-8 text-gray-800">
-              <div className="flex text-blue-600 mb-4 justify-center md:justify-start">
-                {[...Array(currentTestimonial.stars)].map((_, i) => (
-                  <Star key={i} size={20} fill="currentColor" />
-                ))}
+                  <div className="w-full md:w-1/2 p-6 md:p-8">
+                    <div className="flex text-blue-600 mb-4 justify-center md:justify-start">
+                      {[...Array(t.stars)].map((_, i) => (
+                        <Star key={i} size={20} fill="currentColor" />
+                      ))}
+                    </div>
+
+                    <blockquote className="text-base sm:text-lg mb-6 text-center md:text-left leading-relaxed">
+                      &quot;{t.quote}&quot;
+                    </blockquote>
+
+                    <div className="text-center md:text-left">
+                      <h4 className="font-bold text-lg">{t.author}</h4>
+                      <p className="text-sm text-gray-600">{t.position}</p>
+                    </div>
+                  </div>
+                </div>
               </div>
-
-              <blockquote className="text-base sm:text-lg mb-6 text-center md:text-left leading-relaxed">
-                &quot;{currentTestimonial.quote}&quot;
-              </blockquote>
-
-              <div className="text-center md:text-left">
-                <h4 className="font-bold text-lg">
-                  {currentTestimonial.author}
-                </h4>
-                <p className="text-sm text-gray-600">
-                  {currentTestimonial.position}
-                </p>
-              </div>
-            </div>
+            ))}
           </div>
 
-          {/* Dots indicator */}
           <div className="flex justify-center mt-6 space-x-2">
             {testimonials.map((_, index) => (
               <button
                 key={index}
-                onClick={() => setCurrentIndex(index)}
+                onClick={() => handleUserInteraction(index)}
                 className={`w-3 h-3 rounded-full transition-colors ${
                   index === currentIndex ? "bg-blue-600" : "bg-gray-400"
                 }`}
@@ -781,38 +913,50 @@ function WorkingProcessSection() {
   );
 }
 
+type StatCardProps = {
+  end: number;
+  label: string;
+};
+
+function StatCard({ end, label }: StatCardProps) {
+  const [hasAnimated, setHasAnimated] = useState(false);
+  const { ref, inView } = useInView({
+    triggerOnce: true,
+    threshold: 0.3,
+  });
+
+  return (
+    <div
+      ref={ref}
+      className="flex flex-col items-center transition transform hover:scale-105 hover:bg-blue-500 rounded-lg p-4"
+    >
+      <span className="text-5xl font-extrabold mb-2">
+        {inView && !hasAnimated ? (
+          <CountUp
+            end={end}
+            duration={2}
+            suffix="+"
+            onEnd={() => setHasAnimated(true)}
+          />
+        ) : (
+          `${end}+`
+        )}
+      </span>
+      <p className="text-sm tracking-wide uppercase">{label}</p>
+    </div>
+  );
+}
+
 function HeroSection() {
   return (
     <section className="bg-blue-600 text-white py-16">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex flex-col md:flex-row justify-around items-center gap-10 text-center">
-          {/* Stat 1 */}
-          <div className="flex flex-col items-center">
-            <span className="text-5xl font-extrabold mb-2">26+</span>
-            <p className="text-sm tracking-wide uppercase">
-              Years of Experience
-            </p>
-          </div>
-
-          {/* Divider (for medium+ screens) */}
+          <StatCard end={26} label="Years of Experience" />
           <div className="hidden md:block h-16 border-l border-white opacity-40" />
-
-          {/* Stat 2 */}
-          <div className="flex flex-col items-center">
-            <span className="text-5xl font-extrabold mb-2">730+</span>
-            <p className="text-sm tracking-wide uppercase">
-              Successful Projects
-            </p>
-          </div>
-
-          {/* Divider (for medium+ screens) */}
+          <StatCard end={730} label="Successful Projects" />
           <div className="hidden md:block h-16 border-l border-white opacity-40" />
-
-          {/* Stat 3 */}
-          <div className="flex flex-col items-center">
-            <span className="text-5xl font-extrabold mb-2">198+</span>
-            <p className="text-sm tracking-wide uppercase">Happy Clients</p>
-          </div>
+          <StatCard end={198} label="Happy Clients" />
         </div>
       </div>
     </section>
